@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Конструктор — каталог функций для сайта</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧩</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#050706; --card:#0e1611; --card-soft:#14201a; --demo-bg:#0a100c;
+    --line:#1e2b23; --line-soft:#17221c;
+    --ink:#eaf0ec; --ink-dim:#84998b; --ink-faint:#4f6156;
+    --accent:#4fb384; --accent-dim:#316b4c; --accent-tint:#122019;
+    --grad: linear-gradient(135deg, #2e6d4c 0%, #5cc294 100%);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg); color:var(--ink); font-family:'Inter',sans-serif; line-height:1.55;
+    background-image:radial-gradient(ellipse 55% 35% at 20% 0%, rgba(79,179,132,0.10), transparent 60%);
+  }
+  .wrap{max-width:clamp(340px, 88vw, 900px); margin:0 auto; padding:0 clamp(18px,3vw,30px);}
+  h1,h2,h3{font-family:'Sora',sans-serif;}
+
+  header{padding:clamp(26px,4vw,40px) 0 clamp(18px,3vw,26px);}
+  .brand{display:flex; align-items:center; gap:10px; font-weight:700; font-size:1.1rem; margin-bottom:18px;}
+  .brand .mark{
+    width:34px; height:34px; border-radius:10px; background:var(--grad); color:#08130d;
+    display:flex; align-items:center; justify-content:center; font-weight:800;
+  }
+  header h1{font-size:clamp(1.7rem,4.5vw,2.4rem); line-height:1.15; letter-spacing:-0.5px; margin-bottom:10px;}
+  header p{color:var(--ink-dim); font-size:clamp(0.94rem,1.6vw,1.05rem); max-width:480px;}
+
+  .grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:16px; padding:24px 0 40px;}
+
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:18px; padding:1.4rem;
+    display:flex; flex-direction:column; gap:14px; transition:border-color 0.25s;
+  }
+  .card:hover{border-color:var(--accent-dim);}
+  .card-head{display:flex; justify-content:space-between; align-items:flex-start; gap:10px;}
+  .card-head h3{font-size:1.05rem; font-weight:600; margin-bottom:4px;}
+  .card-head p{color:var(--ink-faint); font-size:0.85rem;}
+  .price-tag{
+    flex-shrink:0; font-family:'JetBrains Mono',monospace; font-size:0.78rem; font-weight:500;
+    color:var(--accent); background:var(--accent-tint); border:1px solid var(--accent-dim);
+    padding:4px 10px; border-radius:20px; white-space:nowrap;
+  }
+
+  .demo{
+    background:var(--demo-bg); border:1px solid var(--line-soft); border-radius:14px;
+    padding:1.1rem; min-height:120px; display:flex; flex-direction:column; justify-content:center; gap:10px;
+  }
+
+  /* generic mini controls reused across demos */
+  .mini-input{
+    width:100%; background:var(--card-soft); border:1px solid var(--line); border-radius:10px;
+    padding:0.65rem 0.9rem; color:var(--ink); font-family:'Inter',sans-serif; font-size:0.92rem; outline:none;
+  }
+  .mini-input:focus{border-color:var(--accent-dim);}
+  .mini-btn{
+    background:var(--grad); color:#08130d; border:none; border-radius:10px; font-weight:600;
+    font-size:0.88rem; padding:0.65rem 1rem; cursor:pointer; transition:transform 0.18s;
+  }
+  .mini-btn:active{transform:scale(0.96);}
+  .mini-btn-outline{
+    background:transparent; border:1px solid var(--line); color:var(--ink-dim); border-radius:10px;
+    font-size:0.85rem; padding:0.5rem 0.9rem; cursor:pointer; transition:all 0.18s;
+  }
+  .mini-btn-outline.active{border-color:var(--accent-dim); color:var(--accent); background:var(--accent-tint);}
+
+  /* ── Calculator demo ── */
+  .calc-row{display:flex; gap:8px;}
+  .calc-out{font-family:'JetBrains Mono',monospace; color:var(--accent); font-size:0.95rem; min-height:1.2em;}
+
+  /* ── Language toggle demo ── */
+  .lang-row{display:flex; gap:6px;}
+  .lang-sample{color:var(--ink-dim); font-size:0.92rem; min-height:2.4em;}
+
+  /* ── FAQ demo ── */
+  .mini-faq-item{border-bottom:1px solid var(--line-soft); padding:8px 0;}
+  .mini-faq-item:last-child{border-bottom:none;}
+  .mini-faq-q{display:flex; justify-content:space-between; cursor:pointer; font-size:0.92rem; font-weight:500;}
+  .mini-faq-q .plus{color:var(--accent); transition:transform 0.2s;}
+  .mini-faq-item.open .plus{transform:rotate(45deg);}
+  .mini-faq-a{max-height:0; overflow:hidden; transition:max-height 0.3s; color:var(--ink-faint); font-size:0.85rem;}
+  .mini-faq-item.open .mini-faq-a{max-height:80px; padding-top:8px;}
+
+  /* ── Draggable chip demo ── */
+  .drag-box{position:relative; height:120px; overflow:hidden; border-radius:10px; background:
+    radial-gradient(circle, rgba(79,179,132,0.06) 1px, transparent 1px) 0 0/16px 16px, var(--demo-bg);}
+  .drag-chip{
+    position:absolute; left:14px; top:14px; display:flex; align-items:center; gap:6px;
+    background:var(--grad); color:#08130d; font-weight:600; font-size:0.82rem;
+    padding:0.55rem 0.9rem; border-radius:30px; cursor:grab; touch-action:none; user-select:none;
+    box-shadow:0 6px 16px rgba(79,179,132,0.3);
+  }
+  .drag-chip:active{cursor:grabbing;}
+  .drag-hint{font-size:0.72rem; color:var(--ink-faint); position:absolute; bottom:10px; right:14px;}
+
+  /* ── Status badge demo ── */
+  .status-demo{display:flex; align-items:center; gap:10px;}
+  .status-pill{display:inline-flex; align-items:center; gap:6px; font-size:0.85rem; font-weight:600; padding:5px 12px; border-radius:20px;}
+  .status-pill.open{background:rgba(79,179,132,0.15); color:var(--accent);}
+  .status-pill.closed{background:rgba(200,90,90,0.15); color:#e08a8a;}
+  .status-dot{width:6px; height:6px; border-radius:50%; background:currentColor;}
+
+  /* ── Segmented tabs demo ── */
+  .seg{position:relative; display:flex; background:var(--card-soft); border:1px solid var(--line); border-radius:12px; padding:4px;}
+  .seg-indicator{position:absolute; top:4px; bottom:4px; border-radius:9px; background:var(--accent-tint); border:1px solid var(--accent-dim); transition:all 0.28s cubic-bezier(.4,0,.2,1);}
+  .seg-btn{position:relative; z-index:1; flex:1; background:none; border:none; padding:0.55rem; font-size:0.85rem; color:var(--ink-dim); cursor:pointer; transition:color 0.2s;}
+  .seg-btn.active{color:var(--accent);}
+  .seg-out{color:var(--ink-dim); font-size:0.88rem; text-align:center;}
+
+  /* ── Button showcase demo ── */
+  .btn-row{display:flex; flex-wrap:wrap; gap:8px; align-items:center;}
+  .demo-btn{border:none; border-radius:10px; font-weight:600; font-size:0.85rem; padding:0.6rem 1.1rem; cursor:pointer; transition:all 0.2s cubic-bezier(.4,0,.2,1);}
+  .demo-btn.primary{background:var(--grad); color:#08130d; box-shadow:0 6px 16px rgba(79,179,132,0.25);}
+  .demo-btn.primary:hover{transform:translateY(-2px); box-shadow:0 10px 22px rgba(79,179,132,0.4);}
+  .demo-btn.outline{background:transparent; border:1px solid var(--line); color:var(--ink);}
+  .demo-btn.outline:hover{border-color:var(--accent-dim); color:var(--accent);}
+  .demo-btn.ghost{background:transparent; color:var(--ink-dim); text-decoration:underline; text-underline-offset:3px; padding:0.6rem 0.3rem;}
+  .demo-btn.ghost:hover{color:var(--accent);}
+  .demo-btn.icon{width:38px; height:38px; padding:0; border-radius:50%; background:var(--card-soft); border:1px solid var(--line); color:var(--ink); font-size:1rem;}
+  .demo-btn.icon:hover{border-color:var(--accent-dim); transform:scale(1.08);}
+  .demo-btn.disabled{background:var(--card-soft); color:var(--ink-faint); cursor:not-allowed; opacity:0.6;}
+  .demo-btn:active:not(.disabled){transform:scale(0.96);}
+
+  /* ── Ripple demo ── */
+  .ripple-btn{position:relative; overflow:hidden; background:var(--grad); color:#08130d; border:none; border-radius:10px; font-weight:600; font-size:0.9rem; padding:0.75rem 1.4rem; cursor:pointer; width:100%;}
+  .ripple-span{position:absolute; border-radius:50%; background:rgba(255,255,255,0.55); transform:scale(0); pointer-events:none; animation:rippleAnim 0.6s ease-out forwards;}
+  @keyframes rippleAnim{to{transform:scale(2.6); opacity:0;}}
+
+  /* ── Toggle switch demo ── */
+  .toggle-row{display:flex; align-items:center; gap:12px;}
+  .toggle{width:52px; height:30px; border-radius:20px; background:var(--card-soft); border:1px solid var(--line); position:relative; cursor:pointer; transition:background 0.25s, border-color 0.25s; flex-shrink:0;}
+  .toggle.on{background:var(--grad); border-color:var(--accent-dim);}
+  .toggle-thumb{position:absolute; top:3px; left:3px; width:22px; height:22px; border-radius:50%; background:var(--ink); transition:transform 0.28s cubic-bezier(.4,0,.2,1);}
+  .toggle.on .toggle-thumb{transform:translateX(22px); background:#08130d;}
+  .toggle-label{font-size:0.88rem; color:var(--ink-dim);}
+
+  /* ── Flip card demo ── */
+  .flip-box{perspective:900px; width:100%; height:96px; cursor:pointer;}
+  .flip-inner{position:relative; width:100%; height:100%; transition:transform 0.6s cubic-bezier(.4,0,.2,1); transform-style:preserve-3d;}
+  .flip-box.flipped .flip-inner{transform:rotateY(180deg);}
+  .flip-face{position:absolute; inset:0; backface-visibility:hidden; border-radius:10px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; font-size:0.88rem;}
+  .flip-front{background:var(--card-soft); border:1px solid var(--line); color:var(--ink-dim);}
+  .flip-back{background:var(--grad); color:#08130d; font-weight:600; transform:rotateY(180deg);}
+
+  /* ── Mini game demo ── */
+  .game-hud{display:flex; justify-content:space-between; font-size:0.82rem; color:var(--ink-dim); margin-bottom:8px;}
+  .game-hud b{color:var(--accent); font-family:'JetBrains Mono',monospace;}
+  .game-box{position:relative; height:140px; border-radius:10px; overflow:hidden; background:
+    radial-gradient(circle, rgba(79,179,132,0.06) 1px, transparent 1px) 0 0/16px 16px, var(--demo-bg);}
+  .game-target{
+    position:absolute; width:34px; height:34px; border-radius:50%; background:var(--grad);
+    display:flex; align-items:center; justify-content:center; font-size:0.95rem; cursor:pointer;
+    box-shadow:0 4px 14px rgba(79,179,132,0.4); transition:transform 0.12s; border:none;
+  }
+  .game-target:active{transform:scale(0.82);}
+  .game-overlay{
+    position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:8px; background:rgba(10,16,12,0.9); text-align:center; padding:10px;
+  }
+  .game-overlay p{font-size:0.9rem; color:var(--ink-dim);}
+
+  /* ── Custom-request card ── */
+  .custom-card{
+    background:linear-gradient(145deg, var(--card), var(--accent-tint)); border:1px dashed var(--accent-dim);
+    border-radius:18px; padding:1.6rem; text-align:center; margin-bottom:14px;
+  }
+  .custom-card h3{font-size:1.1rem; margin-bottom:8px;}
+  .custom-card p{color:var(--ink-dim); font-size:0.92rem;}
+
+  .demo-banner{background:var(--card); border:1px solid var(--accent-dim); border-radius:18px; padding:1.4rem; text-align:center; margin-bottom:30px;}
+  .demo-banner strong{color:var(--accent);}
+  .demo-banner p{color:var(--ink-faint); font-size:0.9rem; margin-top:6px;}
+  .demo-banner a{color:var(--accent); text-decoration:none; font-weight:600;}
+
+  footer{text-align:center; padding:26px 0; color:var(--ink-faint); font-size:0.85rem; border-top:1px solid var(--line);}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="brand"><span class="mark">🧩</span> Конструктор</div>
+    <h1>Каталог готовых функций</h1>
+    <p>Модули, которые уже работают на реальных проектах — потрогайте прямо здесь и выберите, что добавить на свой сайт.</p>
+  </header>
+
+  <div class="grid">
+
+    <div class="card">
+      <div class="card-head"><div><h3>Калькулятор</h3><p>Автоматический расчёт по вашей формуле</p></div><span class="price-tag">от 7 500 тг</span></div>
+      <div class="demo">
+        <label style="font-size:0.82rem; color:var(--ink-faint);">Вес, кг</label>
+        <div class="calc-row">
+          <input type="number" class="mini-input" id="calcWeight" placeholder="Например, 3">
+          <button class="mini-btn" id="calcBtn">Расчёт</button>
+        </div>
+        <div class="calc-out" id="calcOut">Тариф: 2 000 тг/кг</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div><h3>Два языка</h3><p>Переключение контента без перезагрузки</p></div><span class="price-tag">от 6 000 тг</span></div>
+      <div class="demo">
+        <div class="lang-row">
+          <button class="mini-btn-outline active" data-lang="ru">RU</button>
+          <button class="mini-btn-outline" data-lang="kk">ҚАЗ</button>
+        </div>
+        <p class="lang-sample" id="langSample">Ваш сайт заговорит на двух языках.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div><h3>FAQ-аккордеон</h3><p>Вопросы сворачиваются и разворачиваются</p></div><span class="price-tag">от 2 500 тг</span></div>
+      <div class="demo">
+        <div class="mini-faq-item">
+          <div class="mini-faq-q">Как это работает? <span class="plus">+</span></div>
+          <div class="mini-faq-a">Нажимаете — ответ разворачивается плавно, без перезагрузки страницы.</div>
+        </div>
+        <div class="mini-faq-item">
+          <div class="mini-faq-q">Можно несколько вопросов? <span class="plus">+</span></div>
+          <div class="mini-faq-a">Да, сколько угодно — просто добавляем ещё пункты.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div><h3>Перетаскиваемая кнопка</h3><p>Плавающий CTA, который не перекрывает контент</p></div><span class="price-tag">от 2 000 тг</span></div>
+      <div class="demo drag-box" id="dragBox">
+        <div class="drag-chip" id="dragChip">💬 Тяните меня</div>
+        <span class="drag-hint">попробуйте перетащить</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div><h3>Статус «открыто/закрыто»</h3><p>Считает текущее время автоматически</p></div><span class="price-tag">от 1 500 тг</span></div>
+      <div class="demo status-demo">
+        <span class="status-pill" id="statusPill"><span class="status-dot"></span><span id="statusPillText">…</span></span>
+        <span style="color:var(--ink-faint); font-size:0.82rem;">на основе графика 10:00–21:00</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div><h3>Переключатель вкладок</h3><p>Плавающий индикатор едет между пунктами</p></div><span class="price-tag">от 3 000 тг</span></div>
+      <div class="demo">
+        <div class="seg" id="segNav">
+          <div class="seg-indicator" id="segIndicator"></div>
+          <button class="seg-btn active" data-val="Один">Раз</button>
+          <button class="seg-btn" data-val="Два">Два</button>
+          <button class="seg-btn" data-val="Три">Три</button>
+        </div>
+        <p class="seg-out" id="segOut">Выбрано: Раз</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div><h3>Кнопки в разных стилях</h3><p>Готовый набор — просто выбрать нужную</p></div><span class="price-tag">от 2 000 тг</span></div>
+      <div class="demo">
+        <div class="btn-row">
+          <button class="demo-btn primary">Основная</button>
+          <button class="demo-btn outline">Контурная</button>
+          <button class="demo-btn ghost">Текстовая</button>
+          <button class="demo-btn icon">★</button>
+          <button class="demo-btn disabled" disabled>Недоступна</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div><h3>Ripple-отклик</h3><p>Красивая волна при нажатии, как в приложениях</p></div><span class="price-tag">от 2 500 тг</span></div>
+      <div class="demo">
+        <button class="ripple-btn" id="rippleBtn">Нажмите сюда</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div><h3>Переключатель (toggle)</h3><p>Плавный тумблер вместо чекбокса</p></div><span class="price-tag">от 2 000 тг</span></div>
+      <div class="demo toggle-row">
+        <div class="toggle" id="toggleDemo"><div class="toggle-thumb"></div></div>
+        <span class="toggle-label" id="toggleLabel">Выключено</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div><h3>Переворачивающаяся карточка</h3><p>Плавный 3D-переход по клику</p></div><span class="price-tag">от 3 000 тг</span></div>
+      <div class="demo">
+        <div class="flip-box" id="flipBox">
+          <div class="flip-inner">
+            <div class="flip-face flip-front">Нажмите, чтобы перевернуть</div>
+            <div class="flip-face flip-back">Вот и обратная сторона 👋</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div><h3>Мини-игра</h3><p>Развлечёт посетителя, пока он листает сайт</p></div><span class="price-tag">🎁 бонус</span></div>
+      <div class="demo">
+        <div class="game-hud"><span>Счёт: <b id="gameScore">0</b></span><span>Время: <b id="gameTime">10</b>с</span></div>
+        <div class="game-box" id="gameBox">
+          <div class="game-overlay" id="gameOverlay">
+            <p>Ловите зелёные кружки, пока не кончилось время</p>
+            <button class="mini-btn" id="gameStart">Играть</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="custom-card">
+    <h3>Не нашли нужное?</h3>
+    <p>Это только часть возможного — любая функция собирается под заказ, просто опишите, что нужно вашему сайту.</p>
+  </div>
+
+  <div class="demo-banner">
+    <strong>Это тоже демо-сайт</strong> — витрина функций, а не готовый продукт.
+    <p>Любой модуль отсюда добавляется на ваш сайт отдельно — цены как в прайсе. Смотрите остальные примеры в <a href="developer-portfolio.html">портфолио</a>.</p>
+  </div>
+
+  <footer>Конструктор — демо-версия каталога функций</footer>
+</div>
+
+<script>
+// ── Calculator ──
+document.getElementById('calcBtn').addEventListener('click', () => {
+  const w = parseFloat(document.getElementById('calcWeight').value);
+  const out = document.getElementById('calcOut');
+  if (!w || w <= 0) { out.textContent = 'Введите вес'; return; }
+  out.textContent = `Итого: ${Math.round(w * 2000).toLocaleString('ru-RU')} тг`;
+});
+
+// ── Language toggle ──
+const langSamples = { ru: 'Ваш сайт заговорит на двух языках.', kk: 'Сіздің сайтыңыз екі тілде сөйлейді.' };
+document.querySelectorAll('[data-lang]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-lang]').forEach(b => b.classList.toggle('active', b === btn));
+    document.getElementById('langSample').textContent = langSamples[btn.getAttribute('data-lang')];
+  });
+});
+
+// ── FAQ accordion ──
+document.querySelectorAll('.mini-faq-q').forEach(q => {
+  q.addEventListener('click', () => q.parentElement.classList.toggle('open'));
+});
+
+// ── Draggable chip (bounded to its demo box) ──
+const dragBox = document.getElementById('dragBox');
+const dragChip = document.getElementById('dragChip');
+let dragging = false, sx, sy, ox, oy;
+
+dragChip.addEventListener('pointerdown', e => {
+  dragging = true;
+  sx = e.clientX; sy = e.clientY;
+  ox = dragChip.offsetLeft; oy = dragChip.offsetTop;
+  dragChip.setPointerCapture(e.pointerId);
+});
+dragChip.addEventListener('pointermove', e => {
+  if (!dragging) return;
+  const dx = e.clientX - sx, dy = e.clientY - sy;
+  const maxX = dragBox.clientWidth - dragChip.offsetWidth - 4;
+  const maxY = dragBox.clientHeight - dragChip.offsetHeight - 4;
+  dragChip.style.left = Math.min(Math.max(ox + dx, 4), maxX) + 'px';
+  dragChip.style.top = Math.min(Math.max(oy + dy, 4), maxY) + 'px';
+});
+dragChip.addEventListener('pointerup', () => dragging = false);
+dragChip.addEventListener('pointercancel', () => dragging = false);
+
+// ── Status pill ──
+const h = new Date().getHours();
+const open = h >= 10 && h < 21;
+const pill = document.getElementById('statusPill');
+pill.classList.add(open ? 'open' : 'closed');
+document.getElementById('statusPillText').textContent = open ? 'Открыто сейчас' : 'Сейчас закрыто';
+
+// ── Segmented tabs ──
+const segBtns = document.querySelectorAll('.seg-btn');
+const segIndicator = document.getElementById('segIndicator');
+function moveSeg(btn){
+  segIndicator.style.left = btn.offsetLeft + 'px';
+  segIndicator.style.width = btn.offsetWidth + 'px';
+}
+segBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    segBtns.forEach(b => b.classList.toggle('active', b === btn));
+    moveSeg(btn);
+    document.getElementById('segOut').textContent = 'Выбрано: ' + btn.getAttribute('data-val');
+  });
+});
+window.addEventListener('load', () => moveSeg(document.querySelector('.seg-btn.active')));
+
+// ── Ripple click effect ──
+const rippleBtn = document.getElementById('rippleBtn');
+rippleBtn.addEventListener('click', e => {
+  const rect = rippleBtn.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height);
+  const span = document.createElement('span');
+  span.className = 'ripple-span';
+  span.style.width = span.style.height = size + 'px';
+  span.style.left = (e.clientX - rect.left - size / 2) + 'px';
+  span.style.top = (e.clientY - rect.top - size / 2) + 'px';
+  rippleBtn.appendChild(span);
+  span.addEventListener('animationend', () => span.remove());
+});
+
+// ── Toggle switch ──
+const toggleDemo = document.getElementById('toggleDemo');
+const toggleLabel = document.getElementById('toggleLabel');
+toggleDemo.addEventListener('click', () => {
+  const on = toggleDemo.classList.toggle('on');
+  toggleLabel.textContent = on ? 'Включено' : 'Выключено';
+});
+
+// ── Flip card ──
+document.getElementById('flipBox').addEventListener('click', function(){
+  this.classList.toggle('flipped');
+});
+
+// ── Mini game: catch the dot ──
+const gameBox = document.getElementById('gameBox');
+const gameOverlay = document.getElementById('gameOverlay');
+const gameScoreEl = document.getElementById('gameScore');
+const gameTimeEl = document.getElementById('gameTime');
+let gameScore = 0, gameTimeLeft = 10, gameTimer = null, gameTarget = null;
+
+function placeTarget(){
+  if (gameTarget) gameTarget.remove();
+  gameTarget = document.createElement('button');
+  gameTarget.className = 'game-target';
+  gameTarget.textContent = '●';
+  const maxX = gameBox.clientWidth - 34;
+  const maxY = gameBox.clientHeight - 34;
+  gameTarget.style.left = Math.max(0, Math.random() * maxX) + 'px';
+  gameTarget.style.top = Math.max(0, Math.random() * maxY) + 'px';
+  gameTarget.addEventListener('click', () => {
+    gameScore++;
+    gameScoreEl.textContent = gameScore;
+    placeTarget();
+  });
+  gameBox.appendChild(gameTarget);
+}
+
+function endGame(){
+  clearInterval(gameTimer);
+  if (gameTarget) { gameTarget.remove(); gameTarget = null; }
+  gameOverlay.innerHTML = `<p>Игра окончена! Счёт: <b style="color:var(--accent)">${gameScore}</b></p><button class="mini-btn" id="gameStart">Играть ещё</button>`;
+  gameOverlay.style.display = 'flex';
+  document.getElementById('gameStart').addEventListener('click', startGame);
+}
+
+function startGame(){
+  gameScore = 0; gameTimeLeft = 10;
+  gameScoreEl.textContent = gameScore;
+  gameTimeEl.textContent = gameTimeLeft;
+  gameOverlay.style.display = 'none';
+  placeTarget();
+  gameTimer = setInterval(() => {
+    gameTimeLeft--;
+    gameTimeEl.textContent = gameTimeLeft;
+    if (gameTimeLeft <= 0) endGame();
+  }, 1000);
+}
+
+document.getElementById('gameStart').addEventListener('click', startGame);
+</script>
+
+</body>
+</html>
